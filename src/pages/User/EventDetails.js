@@ -62,7 +62,7 @@ const EventDetails = () => {
           elevation={3}
           sx={{
             padding: "30px",
-            maxWidth:"60%",
+            maxWidth: "700px",
             minHeight: "calc(100vh - 120px)", 
             textAlign: "center",
             alignContent:"center",
