@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Box, Typography, Button, Paper, Link, Divider } from "@mui/material";
 import { AccountCircle, Dashboard, Event, Link as LinkIcon } from "@mui/icons-material";
 import { AuthContext } from "../context/AuthProvider";
-import WhiteWallLogo from "../assets/WWDS Logo.png";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -21,21 +20,6 @@ const Home = () => {
         color: "text.primary",
       }}
     >
-      {/* WhiteWall Logo */}
-      <Box
-        sx={{
-          mb: 4,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          src={WhiteWallLogo}
-          alt="WhiteWall Digital Solutions"
-          style={{ maxWidth: "200px", height: "auto" }}
-        />
-      </Box>
-
       {/* Welcome Section */}
       <Typography
         variant="h3"

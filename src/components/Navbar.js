@@ -38,7 +38,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ bgcolor: "secondary.main", color: "white" }}>
+      <AppBar position="static" sx={{ bgcolor: "secondary.main", color: "white", height: "60px", }}>
         <Toolbar>
           {/* Logo / Title */}
           <Typography
@@ -69,8 +69,8 @@ const Navbar = () => {
                   }}
                   onClick={handleMenuOpen}
                 >
-                  Hello, <strong style={{ marginLeft: "5px" }}>{user.username}</strong>
-                  <ArrowDownIcon sx={{ ml: 1 }} />
+                  <strong style={{ marginLeft: "5px" }}>{user.username}</strong>
+                  <ArrowDownIcon/>
                 </Button>
 
                 {/* Dropdown Menu */}
