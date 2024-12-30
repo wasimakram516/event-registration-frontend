@@ -6,10 +6,10 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Alert,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import apiClient from "../../api/apiClient";
+import NotFound from "../NotFound";
 
 const ViewRegistrations = () => {
   const { eventId } = useParams();
@@ -24,26 +24,58 @@ const ViewRegistrations = () => {
       try {
         const eventResponse = await apiClient.get(`/events/${eventId}`);
         setEventDetails(eventResponse.data);
-  
+
         const registrationsResponse = await apiClient.get(
           `/registrations/event/${eventId}`
         );
         setRegistrations(registrationsResponse.data.data);
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch data.");
+        if (err.response?.status === 400 || err.response?.status === 404) {
+          setError(err.response?.data?.message || "Event not found.");
+        } else {
+          setError("An unexpected error occurred.");
+        }
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, [eventId]); // Only 'eventId' is a dependency.
-  
+  }, [eventId]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-US", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "calc(100vh - 120px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: "background.default",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return <NotFound message={error} />;
+  }
 
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 120px)",
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -55,14 +87,7 @@ const ViewRegistrations = () => {
         Event Details
       </Typography>
 
-      {loading && <CircularProgress />}
-      {error && (
-        <Alert severity="error" sx={{ mb: 2, width: "100%", maxWidth: 600 }}>
-          {error}
-        </Alert>
-      )}
-
-      {!loading && eventDetails && (
+      {eventDetails && (
         <Box
           sx={{
             width: "100%",
@@ -95,7 +120,7 @@ const ViewRegistrations = () => {
           </Typography>
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 0.5 }}>
             <strong>Date:</strong>{" "}
-            {new Date(eventDetails.date).toLocaleDateString()}
+            {formatDate(eventDetails.date)}
           </Typography>
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 0.5 }}>
             <strong>Venue:</strong> {eventDetails.venue}
@@ -106,34 +131,32 @@ const ViewRegistrations = () => {
         </Box>
       )}
 
-      {!loading && (
-        <Typography
-          variant="h6"
-          sx={{
-            mb: 2,
-            fontWeight: "medium",
-            color: "text.secondary",
-            textAlign: "center",
-          }}
-        >
-          Total Registrations: {registrations.length}
-        </Typography>
-      )}
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 2,
+          fontWeight: "medium",
+          color: "text.secondary",
+          textAlign: "center",
+        }}
+      >
+        Total Registrations: {registrations.length}
+      </Typography>
 
-      {!loading && registrations.length === 0 && (
+      {registrations.length === 0 ? (
         <Typography
           sx={{
             mt: 2,
             fontSize: "1.2rem",
             color: "text.secondary",
             textAlign: "center",
+            justifyContent:"center",
+            alignContent:"center"
           }}
         >
           No registrations found for this event.
         </Typography>
-      )}
-
-      {!loading && registrations.length > 0 && (
+      ) : (
         <Grid container spacing={4}>
           {registrations.map((registration, index) => (
             <Grid item xs={12} sm={6} md={4} key={registration._id}>
@@ -154,10 +177,18 @@ const ViewRegistrations = () => {
                   <Typography variant="body2" color="textSecondary">
                     <strong>Email:</strong> {registration.email}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ mt: 1 }}
+                  >
                     <strong>Phone:</strong> {registration.phone}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ mt: 1 }}
+                  >
                     <strong>Company:</strong> {registration.company || "N/A"}
                   </Typography>
                 </CardContent>

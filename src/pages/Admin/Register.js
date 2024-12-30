@@ -12,6 +12,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  CircularProgress
 } from "@mui/material";
 import { Visibility, VisibilityOff, CheckCircle, ErrorOutline,AccountCircle } from "@mui/icons-material";
 import apiClient from "../../api/apiClient";
@@ -240,7 +241,11 @@ useEffect(() => {
             sx={{ mt: 2 }}
             disabled={loading}
           >
-            {loading ? "Registering..." : "Register"}
+            {loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Register"
+            )}
           </Button>
         </form>
         <Typography sx={{ mt: 2, textAlign: "center" }}>

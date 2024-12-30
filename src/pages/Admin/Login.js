@@ -8,6 +8,7 @@ import {
   IconButton,
   InputAdornment,
   Link,
+  CircularProgress
 } from "@mui/material";
 import { Visibility, VisibilityOff, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -133,7 +134,11 @@ const Login = () => {
             sx={{ mt: 2 }}
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Login"
+            )}
           </Button>
         </form>
         <Typography sx={{ mt: 2, textAlign: "center" }}>

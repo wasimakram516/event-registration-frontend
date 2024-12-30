@@ -3,17 +3,17 @@ import { Box, Typography, Button, Paper } from "@mui/material";
 import { ErrorOutline as ErrorIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-const NotFound = () => {
+const NotFound = ({ message }) => {
   const navigate = useNavigate();
 
   return (
     <Box
       sx={{
+        minHeight: "calc(100vh - 120px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "calc(100vh - 120px)",
-        backgroundColor: "#f5f5f5",
+        bgcolor: "#f5f5f5",
         padding: "20px",
       }}
     >
@@ -41,7 +41,7 @@ const NotFound = () => {
             fontFamily: "'Comfortaa', cursive",
           }}
         >
-          404: Page Not Found
+          {message || "404: Page Not Found"}
         </Typography>
         <Typography
           variant="body1"
@@ -52,7 +52,9 @@ const NotFound = () => {
             fontFamily: "'Montserrat', sans-serif",
           }}
         >
-          Oops! The page you are looking for does not exist or has been moved.
+          {message
+            ? "An error occurred while loading the page."
+            : "Oops! The page you are looking for does not exist or has been moved."}
         </Typography>
         <Button
           variant="contained"
