@@ -9,6 +9,7 @@ import {
   CardActions,
   IconButton,
   CircularProgress,
+  Chip,
 } from "@mui/material";
 import { Add, Edit, Delete, Visibility, Share } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import EventModal from "../../components/EventModal";
 import ShareEventDialog from "../../components/ShareEventDialog";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 import { useSnackbar } from "../../context/SnackbarProvider";
+import { formatDate, getEventStatus } from "../../utils/dateUtils";
 
 const ManageEvents = () => {
   const [events, setEvents] = useState([]);
@@ -43,8 +45,7 @@ const ManageEvents = () => {
     } finally {
       setLoading(false);
     }
-  }, [showSnackbar]); 
-
+  }, [showSnackbar]);
 
   const handleOpenModal = (event = null) => {
     setCurrentEvent(event);
@@ -118,20 +119,49 @@ const ManageEvents = () => {
       )}
       {!loading && events.length > 0 && (
         <Grid container spacing={4}>
-          {events.map((event, index) => (
-            <Grid item xs={12} sm={6} md={4} key={event._id}>
-              <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {event.name}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Date: {new Date(event.date).toLocaleDateString()}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                    Venue: {event.venue}
-                  </Typography>
-                  {event.logoUrl ? (
+          {events.map((event) => {
+            const eventStatus = getEventStatus(event.date);
+
+            return (
+              <Grid item xs={12} sm={6} md={4} key={event._id}>
+                <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
+                  <CardContent>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        mb: 2, // Add margin below the chip
+                      }}
+                    >
+                      <Chip
+                        label={eventStatus}
+                        color={
+                          eventStatus === "Expired"
+                            ? "error"
+                            : eventStatus === "Current"
+                            ? "primary"
+                            : "success"
+                        }
+                        sx={{
+                          fontWeight: "bold",
+                          textTransform: "uppercase",
+                        }}
+                      />
+                    </Box>
+                    <Typography variant="h6" gutterBottom>
+                      {event.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Date: {formatDate(event.date)}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      sx={{ mb: 2 }}
+                    >
+                      Venue: {event.venue}
+                    </Typography>
+                    {event.logoUrl ? (
                     <Box
                       sx={{
                         display: "flex",
@@ -150,38 +180,41 @@ const ManageEvents = () => {
                       No logo available
                     </Typography>
                   )}
-                </CardContent>
-                <CardActions>
-                  <IconButton
-                    color="primary"
-                    onClick={() => navigate(`/registrations/event/${event._id}`)}
-                  >
-                    <Visibility />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => handleOpenModal(event)}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() =>
-                      handleOpenConfirmation(() => handleDelete(event._id))
-                    }
-                  >
-                    <Delete />
-                  </IconButton>
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleOpenShareDialog(event)}
-                  >
-                    <Share />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+                  </CardContent>
+                  <CardActions>
+                    <IconButton
+                      color="primary"
+                      onClick={() =>
+                        navigate(`/registrations/event/${event._id}`)
+                      }
+                    >
+                      <Visibility />
+                    </IconButton>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handleOpenModal(event)}
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() =>
+                        handleOpenConfirmation(() => handleDelete(event._id))
+                      }
+                    >
+                      <Delete />
+                    </IconButton>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleOpenShareDialog(event)}
+                    >
+                      <Share />
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
       )}
 

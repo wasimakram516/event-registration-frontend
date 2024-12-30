@@ -7,9 +7,12 @@ import {
   CircularProgress,
   Paper,
   Chip,
+  Stack,
 } from "@mui/material";
+import { AccessTime } from "@mui/icons-material"; // Import time icon
 import apiClient from "../../api/apiClient";
 import NotFound from "../NotFound";
+import { formatDate } from "../../utils/dateUtils";
 
 const EventDetails = () => {
   const { eventId } = useParams();
@@ -37,20 +40,10 @@ const EventDetails = () => {
     fetchEvent();
   }, [eventId]);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  };
-
   const getEventStatus = (eventDate) => {
     const today = new Date();
     const eventDateObj = new Date(eventDate);
 
-    // Adjust logic for "Expired" and "Current"
     if (
       eventDateObj < today &&
       today.toDateString() !== eventDateObj.toDateString()
@@ -110,7 +103,7 @@ const EventDetails = () => {
           sx={{
             display: "flex",
             justifyContent: "flex-start",
-            marginBottom: "20px", // Ensure space is added below the chip
+            marginBottom: "20px",
           }}
         >
           <Chip
@@ -189,12 +182,14 @@ const EventDetails = () => {
         >
           Register Now
         </Button>
-        <Typography
-          variant="caption"
-          sx={{ marginTop: "10px", display: "block" }}
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{ marginTop: "20px", display: "flex", alignItems: "center", justifyContent:"center" }}
         >
-          Takes 15 sec
-        </Typography>
+          <AccessTime fontSize="small" />
+          <Typography variant="caption">Takes 15 sec</Typography>
+        </Stack>
       </Paper>
     </Box>
   );

@@ -10,6 +10,7 @@ import {
 import { useParams } from "react-router-dom";
 import apiClient from "../../api/apiClient";
 import NotFound from "../NotFound";
+import { formatDate } from "../../utils/dateUtils";
 
 const ViewRegistrations = () => {
   const { eventId } = useParams();
@@ -43,15 +44,7 @@ const ViewRegistrations = () => {
     fetchData();
   }, [eventId]);
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  };
-
+  
   if (loading) {
     return (
       <Box
