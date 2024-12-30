@@ -35,9 +35,20 @@ const Registration = () => {
     setError(null);
   };
 
+  const isValidEmail = (email) => {
+    // Simple email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async () => {
     if (!formData.firstName || !formData.lastName || !formData.phone || !formData.email) {
       setError("Please fill all the required fields.");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -118,6 +129,12 @@ const Registration = () => {
           label="Email"
           value={formData.email}
           onChange={handleInputChange}
+          error={formData.email && !isValidEmail(formData.email)} // Show error state
+          helperText={
+            formData.email && !isValidEmail(formData.email)
+              ? "Invalid email format"
+              : ""
+          } // Helper text for invalid email
           sx={{ marginBottom: "20px" }}
         />
         <TextField
