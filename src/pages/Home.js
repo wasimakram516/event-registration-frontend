@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-import { Box, Typography, Button, Stack, Paper, Link } from "@mui/material";
+import { Box, Typography, Button, Paper, Link, Divider } from "@mui/material";
 import { AccountCircle, Dashboard, Event, Link as LinkIcon } from "@mui/icons-material";
 import { AuthContext } from "../context/AuthProvider";
 import WhiteWallLogo from "../assets/WWDS Logo.png";
 
 const Home = () => {
-  const { user } = useContext(AuthContext); // Access user from AuthContext
+  const { user } = useContext(AuthContext);
 
   return (
     <Box
@@ -24,7 +24,7 @@ const Home = () => {
       {/* WhiteWall Logo */}
       <Box
         sx={{
-          mb: 3,
+          mb: 4,
           display: "flex",
           justifyContent: "center",
         }}
@@ -49,7 +49,11 @@ const Home = () => {
       >
         Welcome to EventCloud
       </Typography>
-      <Typography variant="h6" gutterBottom sx={{ color: "text.secondary", mb: 4 }}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ color: "text.secondary", mb: 4 }}
+      >
         An event management platform powered by{" "}
         <Link
           href="https://www.whitewall.om/"
@@ -64,50 +68,54 @@ const Home = () => {
         Create your account today to manage events seamlessly and professionally.
       </Typography>
 
-      {/* Instructions Section */}
-      <Stack spacing={3} mt={4} maxWidth="600px">
-        {[
+      {/* Single Elevated Card */}
+      <Paper
+        elevation={6}
+        sx={{
+          p: 4,
+          width: "100%",
+          maxWidth: "800px",
+          borderRadius: 3,
+          textAlign: "left",
+        }}
+      >
+        {[ 
           {
-            icon: <AccountCircle color="primary" />,
+            icon: <AccountCircle sx={{ fontSize: 40, color: "primary.main" }} />,
             title: "Register as an Admin",
             description: "Sign up to create and manage your events effortlessly.",
           },
           {
-            icon: <Dashboard color="primary" />,
+            icon: <Dashboard sx={{ fontSize: 40, color: "primary.main" }} />,
             title: "Log in to the Dashboard",
-            description: "Access your personalized dashboard to organize events and track registrations.",
+            description:
+              "Access your personalized dashboard to organize events and track registrations.",
           },
           {
-            icon: <Event color="primary" />,
+            icon: <Event sx={{ fontSize: 40, color: "primary.main" }} />,
             title: "Create an Event",
-            description: "Add event details to generate a unique registration link in minutes.",
+            description:
+              "Add event details to generate a unique registration link in minutes.",
           },
           {
-            icon: <LinkIcon color="primary" />,
+            icon: <LinkIcon sx={{ fontSize: 40, color: "primary.main" }} />,
             title: "Share the Registration Link",
-            description: "Distribute the link through social media, email, or your website for attendees.",
+            description:
+              "Distribute the link through social media, email, or your website for attendees.",
           },
         ].map((step, index) => (
-          <Paper
-            key={index}
-            elevation={3}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              p: 2,
-              borderRadius: 2,
-            }}
-          >
+          <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mb: index < 3 ? 3 : 0 }}>
             {step.icon}
             <Box ml={2}>
-              <Typography variant="h6" gutterBottom>
-                {`${index + 1}. ${step.title}`}
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                {step.title}
               </Typography>
               <Typography>{step.description}</Typography>
             </Box>
-          </Paper>
+            {index < 3 && <Divider sx={{ my: 2 }} />}
+          </Box>
         ))}
-      </Stack>
+      </Paper>
 
       {/* Call to Action */}
       <Button
