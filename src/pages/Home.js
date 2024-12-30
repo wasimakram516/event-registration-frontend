@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Typography, Button, Stack, Paper, Link } from "@mui/material";
 import { AccountCircle, Dashboard, Event, Link as LinkIcon } from "@mui/icons-material";
+import { AuthContext } from "../context/AuthProvider";
 import WhiteWallLogo from "../assets/WWDS Logo.png";
 
 const Home = () => {
+  const { user } = useContext(AuthContext); // Access user from AuthContext
+
   return (
     <Box
       sx={{
@@ -109,7 +112,7 @@ const Home = () => {
       {/* Call to Action */}
       <Button
         component={Link}
-        href="/login"
+        href={user ? "/dashboard" : "/login"}
         variant="contained"
         color="primary"
         size="large"
@@ -121,7 +124,7 @@ const Home = () => {
           borderRadius: 5,
         }}
       >
-        LOGIN / REGISTER
+        {user ? "RETURN TO DASHBOARD" : "LOGIN / REGISTER"}
       </Button>
     </Box>
   );
