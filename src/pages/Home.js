@@ -52,14 +52,13 @@ const Home = () => {
       <Typography
         variant="h6"
         gutterBottom
-        sx={{ color: "text.secondary", mb: 4 }}
+        sx={{ color: "text.primary", mb: 4 }}
       >
         An event management platform powered by{" "}
         <Link
           href="https://www.whitewall.om/"
           target="_blank"
           rel="noopener noreferrer"
-          underline="hover"
           sx={{ color: "inherit", fontWeight: "bold" }}
         >
           WhiteWall Digital Solutions
