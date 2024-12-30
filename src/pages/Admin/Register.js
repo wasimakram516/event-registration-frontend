@@ -250,7 +250,18 @@ useEffect(() => {
         </form>
         <Typography sx={{ mt: 2, textAlign: "center" }}>
           Already have an account?{" "}
-          <Link href="/login" underline="hover">
+          <Link
+            href="/login"
+            underline="hover"
+            sx={{
+              fontWeight: "bold",
+              color: "primary.main", // Use theme's primary color
+              "&:hover": {
+                color: "secondary.main", // Change color on hover for emphasis
+              },
+              textDecoration: "none", // Remove underline for a cleaner look
+            }}
+          >
             Login here
           </Link>
         </Typography>

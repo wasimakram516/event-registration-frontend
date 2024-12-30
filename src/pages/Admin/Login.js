@@ -8,7 +8,7 @@ import {
   IconButton,
   InputAdornment,
   Link,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import { Visibility, VisibilityOff, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -88,7 +88,10 @@ const Login = () => {
           }}
         >
           <AccountCircle sx={{ fontSize: 40, color: "primary.main", mr: 1 }} />
-          <Typography variant="h4" sx={{ fontWeight: "bold", textAlign: "center" }}>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: "bold", textAlign: "center" }}
+          >
             Admin Login
           </Typography>
         </Box>
@@ -134,16 +137,23 @@ const Login = () => {
             sx={{ mt: 2 }}
             disabled={loading}
           >
-            {loading ? (
-              <CircularProgress size={24} />
-            ) : (
-              "Login"
-            )}
+            {loading ? <CircularProgress size={24} /> : "Login"}
           </Button>
         </form>
-        <Typography sx={{ mt: 2, textAlign: "center" }}>
+        <Typography sx={{ mt: 2, textAlign: "center", fontSize: "16px" }}>
           Don't have an account?{" "}
-          <Link href="/register" underline="hover">
+          <Link
+            href="/register"
+            underline="hover"
+            sx={{
+              fontWeight: "bold",
+              color: "primary.main", // Use theme's primary color
+              "&:hover": {
+                color: "secondary.main", // Change color on hover for emphasis
+              },
+              textDecoration: "none", // Remove underline for a cleaner look
+            }}
+          >
             Register here
           </Link>
         </Typography>
