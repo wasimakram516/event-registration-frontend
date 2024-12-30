@@ -69,7 +69,7 @@ const Navbar = () => {
                   }}
                   onClick={handleMenuOpen}
                 >
-                  Welcome, <strong style={{ marginLeft: "5px" }}>{user.username}</strong>
+                  Hello, <strong style={{ marginLeft: "5px" }}>{user.username}</strong>
                   <ArrowDownIcon sx={{ ml: 1 }} />
                 </Button>
 
