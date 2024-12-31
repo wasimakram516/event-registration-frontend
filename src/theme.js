@@ -73,16 +73,9 @@ const theme = createTheme({
       default: '#f4f4f4', 
       paper: '#ffffff',
     },
-    
-    warning: {
-      main: '#726a95', // Muted Purple
-    },
-    info: {
-      main: '#087e8b', // Teal
-    },
     text: {
       primary: '#0b3954', // Navy Blue
-      secondary: '#726a95', // Muted Purple
+      secondary: '#222', // Muted Purple
     },
   },
 });

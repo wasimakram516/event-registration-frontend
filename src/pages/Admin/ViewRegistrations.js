@@ -6,10 +6,13 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  IconButton,
 } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import apiClient from "../../api/apiClient";
 import NotFound from "../NotFound";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 import { formatDate } from "../../utils/dateUtils";
 
 const ViewRegistrations = () => {
@@ -18,6 +21,8 @@ const ViewRegistrations = () => {
   const [eventDetails, setEventDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [registrationToDelete, setRegistrationToDelete] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +49,18 @@ const ViewRegistrations = () => {
     fetchData();
   }, [eventId]);
 
-  
+  const handleDelete = async () => {
+    try {
+      await apiClient.delete(`/registrations/${registrationToDelete}`);
+      setRegistrations((prev) =>
+        prev.filter((reg) => reg._id !== registrationToDelete)
+      );
+      setRegistrationToDelete(null);
+    } catch (err) {
+      console.error("Failed to delete registration:", err);
+    }
+  };
+
   if (loading) {
     return (
       <Box
@@ -112,14 +128,14 @@ const ViewRegistrations = () => {
             {eventDetails.name}
           </Typography>
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 0.5 }}>
-            <strong>Date:</strong>{" "}
-            {formatDate(eventDetails.date)}
+            <strong>Date:</strong> {formatDate(eventDetails.date)}
           </Typography>
           <Typography variant="body1" sx={{ color: "text.secondary", mb: 0.5 }}>
             <strong>Venue:</strong> {eventDetails.venue}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            <strong>Description:</strong> {eventDetails.description || "N/A"}
+            <strong>Description:</strong>{" "}
+            {eventDetails.description || "N/A"}
           </Typography>
         </Box>
       )}
@@ -143,26 +159,36 @@ const ViewRegistrations = () => {
             fontSize: "1.2rem",
             color: "text.secondary",
             textAlign: "center",
-            justifyContent:"center",
-            alignContent:"center"
           }}
         >
           No registrations found for this event.
         </Typography>
       ) : (
         <Grid container spacing={4}>
-          {registrations.map((registration, index) => (
+          {registrations.map((registration) => (
             <Grid item xs={12} sm={6} md={4} key={registration._id}>
               <Card
                 sx={{
                   boxShadow: 3,
                   borderRadius: 2,
                   height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  position: "relative", // Required for absolute positioning
                 }}
               >
+                <IconButton
+                  color="error"
+                  sx={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                  }}
+                  onClick={() => {
+                    setRegistrationToDelete(registration._id);
+                    setDeleteDialogOpen(true);
+                  }}
+                >
+                  <Delete />
+                </IconButton>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     {registration.firstName} {registration.lastName}
@@ -182,7 +208,8 @@ const ViewRegistrations = () => {
                     color="textSecondary"
                     sx={{ mt: 1 }}
                   >
-                    <strong>Company:</strong> {registration.company || "N/A"}
+                    <strong>Company:</strong>{" "}
+                    {registration.company || "N/A"}
                   </Typography>
                 </CardContent>
               </Card>
@@ -190,6 +217,14 @@ const ViewRegistrations = () => {
           ))}
         </Grid>
       )}
+
+      <ConfirmationDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        title="Delete Registration"
+        message="Are you sure you want to delete this registration? This action cannot be undone."
+        onConfirm={handleDelete}
+      />
     </Box>
   );
 };
