@@ -13,7 +13,7 @@ const Home = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "100vh",
+        minHeight: "calc(100vh - 120px)",
         p: 3,
         textAlign: "center",
         bgcolor: "background.default",
