@@ -10,7 +10,7 @@ import {
   Alert,
 } from "@mui/material";
 import apiClient from "../api/apiClient";
-import { useSnackbar } from "../context/SnackbarProvider"; // Import useSnackbar
+import { useSnackbar } from "../context/SnackbarProvider";
 
 const EventModal = ({ open, onClose, event, fetchEvents }) => {
   const [formData, setFormData] = useState({
@@ -19,13 +19,13 @@ const EventModal = ({ open, onClose, event, fetchEvents }) => {
     venue: "",
     description: "",
     logo: null,
+    capacity: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const showSnackbar = useSnackbar(); // Use Snackbar from context
+  const showSnackbar = useSnackbar();
 
-  // Update formData whenever the event prop changes
   useEffect(() => {
     if (event) {
       setFormData({
@@ -36,6 +36,7 @@ const EventModal = ({ open, onClose, event, fetchEvents }) => {
         venue: event.venue || "",
         description: event.description || "",
         logo: null,
+        capacity: event.capacity?.toString() || "", // Pre-fill capacity if editing
       });
     } else {
       setFormData({
@@ -44,20 +45,25 @@ const EventModal = ({ open, onClose, event, fetchEvents }) => {
         venue: "",
         description: "",
         logo: null,
+        capacity: "",
       });
     }
   }, [event]);
 
-  // Clear error when input changes
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({ ...formData, [name]: files ? files[0] : value });
-    setError(null); // Clear error when the user starts typing
+    setError(null);
   };
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.date || !formData.venue) {
+    if (!formData.name || !formData.date || !formData.venue || !formData.capacity) {
       setError("Please fill all the required fields.");
+      return;
+    }
+
+    if (isNaN(Number(formData.capacity)) || Number(formData.capacity) <= 0) {
+      setError("Capacity must be a positive number.");
       return;
     }
 
@@ -68,6 +74,7 @@ const EventModal = ({ open, onClose, event, fetchEvents }) => {
       formDataToSend.append("date", formData.date);
       formDataToSend.append("venue", formData.venue);
       formDataToSend.append("description", formData.description);
+      formDataToSend.append("capacity", formData.capacity);
       if (formData.logo) {
         formDataToSend.append("logo", formData.logo);
       }
@@ -135,6 +142,15 @@ const EventModal = ({ open, onClose, event, fetchEvents }) => {
           multiline
           rows={3}
           value={formData.description}
+          onChange={handleInputChange}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          name="capacity"
+          label="Capacity"
+          type="number"
+          value={formData.capacity}
           onChange={handleInputChange}
           sx={{ mb: 2 }}
         />

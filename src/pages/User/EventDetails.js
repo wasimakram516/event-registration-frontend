@@ -77,6 +77,7 @@ const EventDetails = () => {
   }
 
   const eventStatus = getEventStatus(event.date);
+  const isFullCapacity = event.registrations >= event.capacity;
 
   return (
     <Box
@@ -104,6 +105,8 @@ const EventDetails = () => {
             display: "flex",
             justifyContent: "flex-start",
             marginBottom: "20px",
+            flexWrap: "wrap",
+            gap: "10px",
           }}
         >
           <Chip
@@ -120,6 +123,16 @@ const EventDetails = () => {
               textTransform: "uppercase",
             }}
           />
+          {isFullCapacity && (
+            <Chip
+              label="Full Capacity"
+              color="warning"
+              sx={{
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            />
+          )}
         </Box>
         {event.logoUrl && (
           <Box
@@ -178,14 +191,14 @@ const EventDetails = () => {
             borderRadius: "8px",
           }}
           onClick={() => navigate(`/register/${eventId}`)}
-          disabled={eventStatus === "Expired"}
+          disabled={eventStatus === "Expired" || isFullCapacity}
         >
           Register Now
         </Button>
         <Stack
           direction="row"
           spacing={1}
-          sx={{ marginTop: "20px", display: "flex", alignItems: "center", justifyContent:"center" }}
+          sx={{ marginTop: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}
         >
           <AccessTime fontSize="small" />
           <Typography variant="caption">Takes 15 sec</Typography>
