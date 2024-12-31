@@ -6,11 +6,58 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
-
 <url>
   <loc>https://eventcloud-wwds.vercel.app/</loc>
   <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>1.0</priority>
 </url>
 
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/login</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/register</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/dashboard</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.6</priority>
+</url>
+
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/create-event</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.6</priority>
+</url>
+
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/events</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.6</priority>
+</url>
+
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/event/:eventId</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.8</priority>
+</url>
+
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/register/:eventId</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
+
+<url>
+  <loc>https://eventcloud-wwds.vercel.app/confirmation</loc>
+  <lastmod>2024-12-31T17:34:19+00:00</lastmod>
+  <priority>0.7</priority>
+</url>
 
 </urlset>
