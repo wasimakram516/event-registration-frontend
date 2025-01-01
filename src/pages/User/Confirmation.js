@@ -1,10 +1,11 @@
 import React from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 import { CheckCircleOutline as CheckCircleIcon } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Confirmation = () => {
   const navigate = useNavigate();
+  const { eventId } = useParams(); // Get eventId from route params
 
   return (
     <Box
@@ -64,9 +65,9 @@ const Confirmation = () => {
             textTransform: "none",
             borderRadius: "8px",
           }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate(`/event/${eventId}`)}
         >
-          Go to Home
+          View Event Details
         </Button>
       </Paper>
     </Box>

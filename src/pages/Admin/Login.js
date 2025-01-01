@@ -14,6 +14,7 @@ import { Visibility, VisibilityOff, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../api/apiClient";
 import { setAccessToken, setRefreshToken } from "../../utils/tokenService";
+import { decodeToken } from "../../utils/tokenUtils";
 import { AuthContext } from "../../context/AuthProvider";
 
 const Login = () => {
@@ -41,16 +42,30 @@ const Login = () => {
       const response = await apiClient.post("/admin/login", formData);
       const { accessToken, refreshToken } = response.data;
 
+      // Store tokens in token service
       setAccessToken(accessToken);
       setRefreshToken(refreshToken);
 
-      const decodedUser = {
-        username: formData.username, // Example: Extract from response if available
-      };
+      // Decode the token to get user details
+      const decodedToken = decodeToken();
+      if (!decodedToken) {
+        setError("Failed to decode token. Please try again.");
+        return;
+      }
 
-      login(decodedUser); // Update context with the logged-in user
+      const { username, role } = decodedToken;
+      const user = { username, role };
 
-      navigate("/dashboard");
+      login(user); // Update context with the logged-in user
+
+      // Redirect based on role
+      if (role === "superadmin") {
+        navigate("/superadmindashboard");
+      } else if (role === "admin") {
+        navigate("/dashboard");
+      } else {
+        setError("Unknown role, please contact support.");
+      }
     } catch (error) {
       setError(error.response?.data?.message || "Invalid credentials.");
     } finally {
@@ -147,11 +162,11 @@ const Login = () => {
             underline="hover"
             sx={{
               fontWeight: "bold",
-              color: "primary.main", // Use theme's primary color
+              color: "primary.main",
               "&:hover": {
-                color: "secondary.main", // Change color on hover for emphasis
+                color: "secondary.main",
               },
-              textDecoration: "none", // Remove underline for a cleaner look
+              textDecoration: "none",
             }}
           >
             Register here

@@ -55,7 +55,7 @@ const Registration = () => {
     setLoading(true);
     try {
       await apiClient.post("/registrations", { ...formData, eventId });
-      navigate("/confirmation");
+      navigate(`/confirmation/${eventId}`);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to register.");
     } finally {

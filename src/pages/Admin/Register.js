@@ -12,9 +12,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
-import { Visibility, VisibilityOff, CheckCircle, ErrorOutline,AccountCircle } from "@mui/icons-material";
+import { Visibility, VisibilityOff, CheckCircle, ErrorOutline, AccountCircle } from "@mui/icons-material";
 import apiClient from "../../api/apiClient";
 
 const Register = () => {
@@ -28,6 +28,7 @@ const Register = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPasswordRules, setShowPasswordRules] = useState(false);
   const [passwordRules, setPasswordRules] = useState({
     length: false,
     uppercase: false,
@@ -36,30 +37,39 @@ const Register = () => {
     specialChar: false,
   });
 
-// Auto-hide success or error messages
-useEffect(() => {
-  if (success || error || passwordError) {
-    const timer = setTimeout(() => {
-      setSuccess(false);
-      setError(null);
-      setPasswordError("");
-    }, 5000);
-    return () => clearTimeout(timer);
-  }
-}, [success, error, passwordError]);
+  // Auto-hide success or error messages
+  useEffect(() => {
+    if (success || error || passwordError) {
+      const timer = setTimeout(() => {
+        setSuccess(false);
+        setError(null);
+        setPasswordError("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, error, passwordError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
     if (name === "password") {
-      setPasswordRules({
+      const newPasswordRules = {
         length: value.length >= 8,
         uppercase: /[A-Z]/.test(value),
         lowercase: /[a-z]/.test(value),
         number: /\d/.test(value),
         specialChar: /[@$!%*?&]/.test(value),
-      });
+      };
+      setPasswordRules(newPasswordRules);
+
+      // Show password rules if conditions are unmet
+      if (!Object.values(newPasswordRules).every((rule) => rule)) {
+        setShowPasswordRules(true);
+      } else {
+        // Hide rules once all conditions are met
+        setShowPasswordRules(false);
+      }
     }
   };
 
@@ -173,32 +183,34 @@ useEffect(() => {
               ),
             }}
           />
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="subtitle1">Password must include:</Typography>
-            <List>
-              {[
-                { rule: "At least 8 characters", fulfilled: passwordRules.length },
-                { rule: "An uppercase letter", fulfilled: passwordRules.uppercase },
-                { rule: "A lowercase letter", fulfilled: passwordRules.lowercase },
-                { rule: "A number", fulfilled: passwordRules.number },
-                { rule: "A special character (@$!%*?&)", fulfilled: passwordRules.specialChar },
-              ].map((item, index) => (
-                <ListItem key={index} disablePadding>
-                  <ListItemIcon>
-                    {item.fulfilled ? (
-                      <CheckCircle color="success" />
-                    ) : (
-                      <ErrorOutline color="error" />
-                    )}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.rule}
-                    sx={{ color: item.fulfilled ? "success.main" : "error.main" }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
+          {showPasswordRules && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle1">Password must include:</Typography>
+              <List>
+                {[
+                  { rule: "At least 8 characters", fulfilled: passwordRules.length },
+                  { rule: "An uppercase letter", fulfilled: passwordRules.uppercase },
+                  { rule: "A lowercase letter", fulfilled: passwordRules.lowercase },
+                  { rule: "A number", fulfilled: passwordRules.number },
+                  { rule: "A special character (@$!%*?&)", fulfilled: passwordRules.specialChar },
+                ].map((item, index) => (
+                  <ListItem key={index} disablePadding>
+                    <ListItemIcon>
+                      {item.fulfilled ? (
+                        <CheckCircle color="success" />
+                      ) : (
+                        <ErrorOutline color="error" />
+                      )}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.rule}
+                      sx={{ color: item.fulfilled ? "success.main" : "error.main" }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          )}
           <TextField
             fullWidth
             label="Confirm Password"
@@ -241,11 +253,7 @@ useEffect(() => {
             sx={{ mt: 2 }}
             disabled={loading}
           >
-            {loading ? (
-              <CircularProgress size={24} />
-            ) : (
-              "Register"
-            )}
+            {loading ? <CircularProgress size={24} /> : "Register"}
           </Button>
         </form>
         <Typography sx={{ mt: 2, textAlign: "center" }}>
@@ -255,11 +263,11 @@ useEffect(() => {
             underline="hover"
             sx={{
               fontWeight: "bold",
-              color: "primary.main", // Use theme's primary color
+              color: "primary.main",
               "&:hover": {
-                color: "secondary.main", // Change color on hover for emphasis
+                color: "secondary.main",
               },
-              textDecoration: "none", // Remove underline for a cleaner look
+              textDecoration: "none",
             }}
           >
             Login here

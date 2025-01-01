@@ -1,10 +1,22 @@
 import React, { useContext } from "react";
 import { Box, Typography, Button, Paper, Link, Divider } from "@mui/material";
 import { AccountCircle, Dashboard, Event, Link as LinkIcon } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    if (user?.role === "admin") {
+      navigate("/dashboard");
+    } else if (user?.role === "superadmin") {
+      navigate("/superadmindashboard");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <Box
@@ -62,7 +74,7 @@ const Home = () => {
           textAlign: "left",
         }}
       >
-        {[ 
+        {[
           {
             icon: <AccountCircle sx={{ fontSize: 40, color: "primary.main" }} />,
             title: "Register as an Admin",
@@ -87,7 +99,10 @@ const Home = () => {
               "Distribute the link through social media, email, or your website for attendees.",
           },
         ].map((step, index) => (
-          <Box key={index} sx={{ display: "flex", alignItems: "flex-start", mb: index < 3 ? 3 : 0 }}>
+          <Box
+            key={index}
+            sx={{ display: "flex", alignItems: "flex-start", mb: index < 3 ? 3 : 0 }}
+          >
             {step.icon}
             <Box ml={2}>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -102,8 +117,7 @@ const Home = () => {
 
       {/* Call to Action */}
       <Button
-        component={Link}
-        href={user ? "/dashboard" : "/login"}
+        onClick={handleNavigation}
         variant="contained"
         color="primary"
         size="large"
@@ -115,7 +129,7 @@ const Home = () => {
           borderRadius: 5,
         }}
       >
-        {user ? "RETURN TO DASHBOARD" : "LOGIN / REGISTER"}
+        {user ? "GO TO DASHBOARD" : "LOGIN / REGISTER"}
       </Button>
     </Box>
   );

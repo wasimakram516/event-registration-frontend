@@ -7,8 +7,9 @@ import {
   CardContent,
   CircularProgress,
   IconButton,
+  Button,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Delete, FileDownload as FileDownloadIcon } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import apiClient from "../../api/apiClient";
 import NotFound from "../NotFound";
@@ -61,6 +62,48 @@ const ViewRegistrations = () => {
     }
   };
 
+  const exportToCSV = () => {
+    if (!eventDetails) return;
+  
+    const csvHeaders = [
+      "First Name",
+      "Last Name",
+      "Email",
+      "Phone",
+      "Company",
+    ];
+  
+    const csvRows = registrations.map((reg) => [
+      reg.firstName || "N/A", // Default to "N/A" if missing
+      reg.lastName || "N/A", // Default to "N/A" if missing
+      reg.email || "N/A",
+      reg.phone ? `="${reg.phone}"` : "N/A", // Use ="phone" to preserve format without a single quote
+      reg.company || "N/A", // Default to "N/A" if missing
+    ]);
+  
+    // Add event details at the beginning
+    const eventMetadata = [
+      ["Event Name:", eventDetails.name || "N/A"],
+      ["Event Date:", formatDate(eventDetails.date || "N/A")],
+      ["Venue:", eventDetails.venue || "N/A"],
+      ["Description:", eventDetails.description || "N/A"],
+      ["Logo URL:", eventDetails.logoUrl || "N/A"],
+      [], // Empty row for spacing
+    ];
+  
+    const csvContent = [
+      ...eventMetadata.map((row) => row.join(",")), // Add event details as rows
+      csvHeaders.join(","), // Add headers
+      ...csvRows.map((row) => row.join(",")), // Add registration data
+    ].join("\n");
+  
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${eventDetails.name || "event"}_registrations.csv`;
+    link.click();
+  };
+  
   if (loading) {
     return (
       <Box
@@ -84,7 +127,7 @@ const ViewRegistrations = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        minHeight: "calc(100vh - 120px)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -120,7 +163,11 @@ const ViewRegistrations = () => {
               <img
                 src={eventDetails.logoUrl}
                 alt={`${eventDetails.name} Logo`}
-                style={{ maxHeight: 100, maxWidth: "100%", objectFit: "contain" }}
+                style={{
+                  maxHeight: 100,
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
               />
             </Box>
           )}
@@ -152,6 +199,17 @@ const ViewRegistrations = () => {
         Total Registrations: {registrations.length}
       </Typography>
 
+      {registrations.length > 0 && (
+        <Button
+          variant="contained"
+          sx={{ mb: 3 }}
+          onClick={exportToCSV}
+          color="primary"
+          startIcon={<FileDownloadIcon />}
+        >
+          Export to CSV
+        </Button>
+      )}
       {registrations.length === 0 ? (
         <Typography
           sx={{

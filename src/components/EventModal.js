@@ -12,7 +12,7 @@ import {
 import apiClient from "../api/apiClient";
 import { useSnackbar } from "../context/SnackbarProvider";
 
-const EventModal = ({ open, onClose, event, fetchEvents }) => {
+const EventModal = ({ open, onClose, event, fetchEvents, useSuperAdmin = false }) => {
   const [formData, setFormData] = useState({
     name: "",
     date: "",
@@ -79,8 +79,10 @@ const EventModal = ({ open, onClose, event, fetchEvents }) => {
         formDataToSend.append("logo", formData.logo);
       }
 
+      const endpointBase = useSuperAdmin ? "/superadmin/events" : "/events";
+
       if (event) {
-        await apiClient.put(`/events/${event._id}`, formDataToSend);
+        await apiClient.put(`${endpointBase}/${event._id}`, formDataToSend);
         showSnackbar("Event updated successfully!", "success");
       } else {
         await apiClient.post("/events", formDataToSend);

@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Admin/Login";
 import Register from "../pages/Admin/Register";
 import Dashboard from "../pages/Admin/Dashboard";
+import SuperAdminDashboard from "../pages/Admin/SuperAdminDashboard";
 import CreateEvent from "../pages/Admin/CreateEvent";
 import EventDetails from "../pages/User/EventDetails";
 import Registration from "../pages/User/Registration";
@@ -20,12 +21,13 @@ const AppRoutes = () => (
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
+    <Route path="/superadmindashboard" element={<ProtectedRoute element={<SuperAdminDashboard />} />} />
     <Route path="/create-event" element={<ProtectedRoute element={<CreateEvent />} />} />
     <Route path="/events" element={<ProtectedRoute element={<ManageEvents />} />} />
     <Route path="/registrations/event/:eventId" element={<ProtectedRoute element={<ViewRegistrations />} />} />
     <Route path="/event/:eventId" element={<EventDetails />} />
     <Route path="/register/:eventId" element={<Registration />} />
-    <Route path="/confirmation" element={<Confirmation />} />
+    <Route path="/confirmation/:eventId" element={<Confirmation />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
