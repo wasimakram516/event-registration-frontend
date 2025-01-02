@@ -23,12 +23,11 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [showPasswordRules, setShowPasswordRules] = useState(false);
+  const [formErrors, setFormErrors] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [passwordRules, setPasswordRules] = useState({
     length: false,
     uppercase: false,
@@ -36,23 +35,79 @@ const Register = () => {
     number: false,
     specialChar: false,
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordRules, setShowPasswordRules] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Auto-hide success or error messages
   useEffect(() => {
-    if (success || error || passwordError) {
+    if (success || error) {
       const timer = setTimeout(() => {
         setSuccess(false);
         setError(null);
-        setPasswordError("");
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [success, error, passwordError]);
+  }, [success, error]);
+
+  const validateForm = () => {
+    const errors = {};
+    const { username, password, confirmPassword } = formData;
+
+    // Username validation
+    if (username.length < 4) {
+      errors.username = "Username must be at least 4 characters long.";
+    } else if (/\s/.test(username)) {
+      errors.username = "Username should not contain spaces.";
+    } else if (!/^[a-zA-Z0-9]+$/.test(username)) {
+      errors.username = "Username should only contain alphanumeric characters.";
+    }
+
+    // Password validation
+    const newPasswordRules = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      specialChar: /[@$!%*?&]/.test(password),
+    };
+    setPasswordRules(newPasswordRules);
+
+    if (!Object.values(newPasswordRules).every((rule) => rule)) {
+      errors.password = "Password does not meet the required criteria.";
+    }
+
+    // Confirm Password validation
+    if (password !== confirmPassword) {
+      errors.confirmPassword = "Passwords do not match.";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
+  
+    // Clear specific field error when user starts typing
+    setFormErrors({ ...formErrors, [name]: "" });
+  
+    // Dynamic validation for fields
+    if (name === "username") {
+      const usernameError =
+        value.length < 4
+          ? "Username must be at least 4 characters long."
+          : /\s/.test(value)
+          ? "Username should not contain spaces."
+          : !/^[a-zA-Z0-9]+$/.test(value)
+          ? "Username should only contain alphanumeric characters."
+          : "";
+      setFormErrors((prev) => ({ ...prev, username: usernameError }));
+    }
+  
     if (name === "password") {
       const newPasswordRules = {
         length: value.length >= 8,
@@ -62,42 +117,40 @@ const Register = () => {
         specialChar: /[@$!%*?&]/.test(value),
       };
       setPasswordRules(newPasswordRules);
-
-      // Show password rules if conditions are unmet
-      if (!Object.values(newPasswordRules).every((rule) => rule)) {
-        setShowPasswordRules(true);
+      setShowPasswordRules(!Object.values(newPasswordRules).every((rule) => rule));
+  
+      // Check for confirm password mismatch
+      if (formData.confirmPassword && formData.confirmPassword !== value) {
+        setFormErrors((prev) => ({
+          ...prev,
+          confirmPassword: "Passwords do not match.",
+        }));
       } else {
-        // Hide rules once all conditions are met
-        setShowPasswordRules(false);
+        setFormErrors((prev) => ({
+          ...prev,
+          confirmPassword: "",
+        }));
       }
     }
+  
+    if (name === "confirmPassword") {
+      const confirmPasswordError =
+        value !== formData.password
+          ? "Passwords do not match."
+          : "";
+      setFormErrors((prev) => ({ ...prev, confirmPassword: confirmPasswordError }));
+    }
   };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const validatePassword = (password) => {
-    return Object.values(passwordRules).every((rule) => rule);
-  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     setLoading(true);
     setError(null);
     setSuccess(false);
-
-    if (!validatePassword(formData.password)) {
-      setPasswordError("Password does not meet the required criteria.");
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setPasswordError("Passwords do not match.");
-      setLoading(false);
-      return;
-    }
 
     try {
       await apiClient.post("/admin/register", {
@@ -118,6 +171,10 @@ const Register = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -163,6 +220,8 @@ const Register = () => {
             onChange={handleChange}
             margin="normal"
             required
+            error={!!formErrors.username}
+            helperText={formErrors.username}
           />
           <TextField
             fullWidth
@@ -173,6 +232,8 @@ const Register = () => {
             onChange={handleChange}
             margin="normal"
             required
+            error={!!formErrors.password}
+            helperText={formErrors.password}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -187,13 +248,22 @@ const Register = () => {
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle1">Password must include:</Typography>
               <List>
-                {[
-                  { rule: "At least 8 characters", fulfilled: passwordRules.length },
-                  { rule: "An uppercase letter", fulfilled: passwordRules.uppercase },
-                  { rule: "A lowercase letter", fulfilled: passwordRules.lowercase },
-                  { rule: "A number", fulfilled: passwordRules.number },
-                  { rule: "A special character (@$!%*?&)", fulfilled: passwordRules.specialChar },
-                ].map((item, index) => (
+                {[{
+                  rule: "At least 8 characters",
+                  fulfilled: passwordRules.length,
+                }, {
+                  rule: "An uppercase letter",
+                  fulfilled: passwordRules.uppercase,
+                }, {
+                  rule: "A lowercase letter",
+                  fulfilled: passwordRules.lowercase,
+                }, {
+                  rule: "A number",
+                  fulfilled: passwordRules.number,
+                }, {
+                  rule: "A special character (@$!%*?&)",
+                  fulfilled: passwordRules.specialChar,
+                }].map((item, index) => (
                   <ListItem key={index} disablePadding>
                     <ListItemIcon>
                       {item.fulfilled ? (
@@ -220,6 +290,8 @@ const Register = () => {
             onChange={handleChange}
             margin="normal"
             required
+            error={!!formErrors.confirmPassword}
+            helperText={formErrors.confirmPassword}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -230,11 +302,6 @@ const Register = () => {
               ),
             }}
           />
-          {passwordError && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {passwordError}
-            </Alert>
-          )}
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
