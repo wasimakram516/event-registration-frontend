@@ -100,8 +100,14 @@ const ManageEvents = () => {
         p: 3,
       }}
     >
-      <Typography variant="h4" sx={{ mb: 3 }}>
+      <Typography variant="h4" sx={{ mb: 1, fontWeight: "bold" }}>
         Manage Events
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ mb: 3, color: "text.secondary", textAlign: "center" }}
+      >
+        Create, update, and manage your events effortlessly. You can also view event details and share them with others.
       </Typography>
 
       <Button

@@ -64,13 +64,22 @@ const Dashboard = () => {
       <Typography
         variant="h4"
         sx={{
-          mb: 4,
+          mb: 1,
           textAlign: "center",
           fontWeight: "bold",
-          fontFamily: "'Comfortaa', sans-serif",
         }}
       >
         Admin Dashboard
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{
+          mb: 4,
+          textAlign: "center",
+          color: "text.secondary",
+        }}
+      >
+        View your event and registration statistics, manage events, and get an overview of your platform activity.
       </Typography>
 
       <Grid container spacing={4}>

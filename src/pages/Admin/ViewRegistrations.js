@@ -135,8 +135,14 @@ const ViewRegistrations = () => {
         p: 3,
       }}
     >
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
+      <Typography variant="h4" sx={{ mb: 1, fontWeight: "bold" }}>
         Event Details
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ mb: 3, color: "text.secondary", textAlign: "center" }}
+      >
+        View event details and manage registrations for this event. Export registration data or delete entries as needed.
       </Typography>
 
       {eventDetails && (

@@ -292,7 +292,12 @@ const SuperAdminDashboard = () => {
         p: 3,
       }}
     >
-      <Typography variant="h4" sx={{ mb: 1, textAlign: "center" }}>
+      <Typography variant="h4"
+        sx={{
+          mb: 1,
+          textAlign: "center",
+          fontWeight: "bold",
+        }}>
         Super Admin Dashboard
       </Typography>
       <Typography
