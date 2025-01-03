@@ -89,7 +89,7 @@ const Navbar = () => {
                 to="/login"
                 sx={{ textTransform: "none", mx: 1 }}
               >
-                Login / Register
+                Sign in
               </Button>
             )}
           </Box>
