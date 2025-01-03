@@ -10,7 +10,7 @@ import {
   Link,
   CircularProgress,
 } from "@mui/material";
-import { Visibility, VisibilityOff, AccountCircle } from "@mui/icons-material";
+import { Visibility, VisibilityOff, AccountCircle, Login as LoginIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../../api/apiClient";
 import { setAccessToken, setRefreshToken } from "../../utils/tokenService";
@@ -151,6 +151,7 @@ const Login = () => {
             color="primary"
             sx={{ mt: 2 }}
             disabled={loading}
+            startIcon={<LoginIcon />}
           >
             {loading ? <CircularProgress size={24} /> : "Login"}
           </Button>

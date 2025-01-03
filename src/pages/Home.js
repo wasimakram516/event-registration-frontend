@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Box, Typography, Button, Paper, Link, Divider } from "@mui/material";
-import { AccountCircle, Dashboard, Event, Link as LinkIcon } from "@mui/icons-material";
+import { AccountCircle, Dashboard, Event, Link as LinkIcon, Login } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 
@@ -101,7 +101,11 @@ const Home = () => {
         ].map((step, index) => (
           <Box
             key={index}
-            sx={{ display: "flex", alignItems: "flex-start", mb: index < 3 ? 3 : 0 }}
+            sx={{
+              display: "flex",
+              alignItems: "flex-start",
+              mb: index < 3 ? 3 : 0,
+            }}
           >
             {step.icon}
             <Box ml={2}>
@@ -121,6 +125,7 @@ const Home = () => {
         variant="contained"
         color="primary"
         size="large"
+        startIcon={user ? <Dashboard /> : <Login />}
         sx={{
           mt: 5,
           px: 4,
@@ -129,7 +134,7 @@ const Home = () => {
           borderRadius: 5,
         }}
       >
-        {user ? "GO TO DASHBOARD" : "log In"}
+        {user ? "GO TO DASHBOARD" : "Log In"}
       </Button>
     </Box>
   );

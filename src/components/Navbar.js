@@ -8,7 +8,12 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { KeyboardArrowDown as ArrowDownIcon } from "@mui/icons-material";
+import {
+  KeyboardArrowDown as ArrowDownIcon,
+  AccountCircle as AccountCircleIcon,
+  Login as LoginIcon,
+  Logout as LogoutIcon,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthProvider";
 import ConfirmationDialog from "../components/ConfirmationDialog";
@@ -38,7 +43,10 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ bgcolor: "secondary.main", color: "white", height: "60px", }}>
+      <AppBar
+        position="static"
+        sx={{ bgcolor: "secondary.main", color: "white", height: "60px" }}
+      >
         <Toolbar>
           {/* Logo / Title */}
           <Typography
@@ -58,7 +66,7 @@ const Navbar = () => {
           <Box>
             {user ? (
               <>
-                {/* Username with Dropdown Icon */}
+                {/* Username with Account Icon and Dropdown */}
                 <Button
                   color="inherit"
                   sx={{
@@ -68,9 +76,10 @@ const Navbar = () => {
                     alignItems: "center",
                   }}
                   onClick={handleMenuOpen}
+                  startIcon={<AccountCircleIcon />}
                 >
-                  <strong style={{ marginLeft: "5px" }}>{user.username}</strong>
-                  <ArrowDownIcon/>
+                  <strong>{user.username}</strong>
+                  <ArrowDownIcon />
                 </Button>
 
                 {/* Dropdown Menu */}
@@ -79,7 +88,13 @@ const Navbar = () => {
                   open={Boolean(anchorEl)}
                   onClose={handleMenuClose}
                 >
-                  <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+                  <MenuItem onClick={handleLogoutClick}>
+                    <LogoutIcon
+                      fontSize="small"
+                      sx={{ marginRight: 1, color: "error.main" }}
+                    />
+                    Logout
+                  </MenuItem>
                 </Menu>
               </>
             ) : (
@@ -88,6 +103,7 @@ const Navbar = () => {
                 component={Link}
                 to="/login"
                 sx={{ textTransform: "none", mx: 1 }}
+                startIcon={<LoginIcon />}
               >
                 Sign in
               </Button>

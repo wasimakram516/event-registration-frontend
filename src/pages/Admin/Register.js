@@ -14,7 +14,7 @@ import {
   ListItemText,
   CircularProgress,
 } from "@mui/material";
-import { Visibility, VisibilityOff, CheckCircle, ErrorOutline, AccountCircle } from "@mui/icons-material";
+import { Visibility, VisibilityOff, CheckCircle, ErrorOutline, AccountCircle, AppRegistration  as RegisterIcon, } from "@mui/icons-material";
 import apiClient from "../../api/apiClient";
 
 const Register = () => {
@@ -318,6 +318,7 @@ const Register = () => {
             variant="contained"
             color="primary"
             sx={{ mt: 2 }}
+            startIcon={<RegisterIcon />}
             disabled={loading}
           >
             {loading ? <CircularProgress size={24} /> : "Register"}
