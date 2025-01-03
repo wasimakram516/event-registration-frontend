@@ -129,7 +129,7 @@ const Home = () => {
           borderRadius: 5,
         }}
       >
-        {user ? "GO TO DASHBOARD" : "Sign In"}
+        {user ? "GO TO DASHBOARD" : "log In"}
       </Button>
     </Box>
   );
